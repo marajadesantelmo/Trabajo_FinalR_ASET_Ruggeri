@@ -11,8 +11,24 @@ graphics.off()        # Cierra gráficos
 cat("\014")           # Limpia la consola
 gc()                  # Libera memoria RAM
 
-# Fijar carpeta de trabajo exacta en Windows
-setwd("C:/Trabajo_FinalR_ASET_Ruggeri")
+# Fijar carpeta de trabajo: la ruta fija si existe; si no, la raíz del repositorio
+# (carpeta donde está este script)
+dir_fijo <- "C:/Trabajo_FinalR_ASET_Ruggeri"
+if (dir.exists(dir_fijo)) {
+  setwd(dir_fijo)
+} else {
+  ruta_script <- tryCatch({
+    args <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+    if (length(args) > 0) {
+      sub("^--file=", "", args[1])                                  # Rscript
+    } else if (!is.null(sys.frames()[[1]]$ofile)) {
+      sys.frames()[[1]]$ofile                                       # source()
+    } else {
+      rstudioapi::getSourceEditorContext()$path                     # RStudio
+    }
+  }, error = function(e) "")
+  if (nzchar(ruta_script)) setwd(dirname(normalizePath(ruta_script)))
+}
 
 # 1. Cargar librerías necesarias
 suppressPackageStartupMessages({
@@ -30,7 +46,7 @@ message("--> Registro agregado al archivo log.txt")
 # 3. Lectura de todas las bases - carpeta "bases"
 archivos_bases <- list.files(
   path = "bases", 
-  pattern = "\\.(xls|xlsx|rds|sav|csv|txt)$", 
+  pattern = "[.](xls|xlsx|rds|sav|csv|txt)$", 
   full.names = TRUE, 
   recursive = TRUE,
   ignore.case = TRUE

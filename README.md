@@ -5,7 +5,8 @@
 **Aglomerado:** Gran Mendoza  
 
 ## Estructura del Repositorio
-* `bases/`: Microdatos trimestrales de la EPH.
+* `descarga_bases.R`: Descarga los microdatos trimestrales de la EPH (paquete `eph`) a `bases/`. Ejecutar primero.
+* `bases/`: Microdatos trimestrales de la EPH (.rds generados por `descarga_bases.R`; no se versionan).
 * `resultados/`: Tablas procesadas (.csv) y gráficos (.png).
 * `script_procesamiento.R`: Script automatizado de R.
 * `Trabajo_final_RASET_Ruggeri.Rmd`: Código fuente del informe RMarkdown.
